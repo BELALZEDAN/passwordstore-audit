@@ -9,33 +9,39 @@ pragma solidity 0.8.18;
  */
 contract PasswordStore {
     error PasswordStore__NotOwner();
+    error PasswordStore__InvalidPassword();
+    error PasswordStore__ZeroAddress();
 
     address private s_owner;
-    string private s_password;
+    bytes32 private s_passwordHash;
 
-    event SetNetPassword();
+    event SetNewPassword(address indexed owner, bytes32 passwordHash);
+    event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
 
     constructor() {
         s_owner = msg.sender;
     }
 
-    /*
-     * @notice This function allows only the owner to set a new password.
-     * @param newPassword The new password to set.
-     */
-    function setPassword(string memory newPassword) external {
-        s_password = newPassword;
-        emit SetNetPassword();
+    modifier onlyOwner() {
+        if (msg.sender != s_owner) revert PasswordStore__NotOwner();
+        _;
     }
 
-    /*
-     * @notice This allows only the owner to retrieve the password.
-     * @param newPassword The new password to set.
-     */
-    function getPassword() external view returns (string memory) {
-        if (msg.sender != s_owner) {
-            revert PasswordStore__NotOwner();
-        }
-        return s_password;
+    function setPassword(string memory newPassword) external onlyOwner {
+        uint256 length = bytes(newPassword).length;
+        if (length < 8 || length > 64) revert PasswordStore__InvalidPassword();
+
+        s_passwordHash = keccak256(bytes(newPassword));
+        emit SetNewPassword(msg.sender, s_passwordHash);
+    }
+
+    function getPasswordHash() external view onlyOwner returns (bytes32) {
+        return s_passwordHash;
+    }
+
+    function transferOwnership(address newOwner) external onlyOwner {
+        if (newOwner == address(0)) revert PasswordStore__ZeroAddress();
+        emit OwnershipTransferred(s_owner, newOwner);
+        s_owner = newOwner;
     }
 }
