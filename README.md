@@ -1,88 +1,84 @@
+# PasswordStore — Remediated Implementation (Fixes Branch)
 
-# PasswordStore
+## Overview
 
-<br/>
-<p align="center">
-<img src="./password-store-logo.png" width="400" alt="password-store">
-</p>
-<br/>
+This branch contains the **remediated and hardened implementation** of the `PasswordStore` smart contract following the findings identified during the security audit.
 
-A smart contract applicatoin for storing a password. Users should be able to store a password and then retrieve it later. Others should not be able to access the password. 
+All changes in this branch are **post-audit fixes** and are intentionally separated from the original audited code to preserve audit integrity.
 
-- [PasswordStore](#passwordstore)
-- [Getting Started](#getting-started)
-  - [Requirements](#requirements)
-  - [Quickstart](#quickstart)
-- [Usage](#usage)
-  - [Deploy (local)](#deploy-local)
-  - [Testing](#testing)
-    - [Test Coverage](#test-coverage)
-- [Audit Scope Details](#audit-scope-details)
-- [Roles](#roles)
+> ⚠️ The original vulnerable implementation remains unchanged in the `main` branch.
 
-# Getting Started
+---
 
-## Requirements
+## 🎯 Purpose of This Branch
 
-- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-  - You'll know you did it right if you can run `git --version` and you see a response like `git version x.x.x`
-- [foundry](https://getfoundry.sh/)
-  - You'll know you did it right if you can run `forge --version` and you see a response like `forge 0.2.0 (816e00b 2023-03-16T00:05:26.396218Z)`
+The `fixes` branch demonstrates:
 
-## Quickstart
+- Correct remediation of identified security issues
+- Secure smart contract design practices
+- Clear traceability between findings and fixes
 
-```
-git clone https://github.com/BELALZEDAN/passwordstore-audit.git
-cd passwordstore-audit
-forge build
-```
+This branch is provided for **educational and portfolio purposes**.
 
-# Usage
+---
 
-## Deploy (local)
+## 🔐 Summary of Fixes
 
-1. Start a local node
+### Security Improvements
+- Added strict access control to sensitive functions
+- Removed plaintext password storage
+- Replaced sensitive data with cryptographic hashes
 
-```
-make anvil
-```
+### Design & Maintainability
+- Introduced ownership transfer mechanism
+- Added reusable `onlyOwner` modifier
+- Enforced password input validation
 
-2. Deploy
+### Code Quality
+- Fixed event naming typo
+- Improved event observability
+- Increased overall code clarity and consistency
 
-This will default to your local node. You need to have it running in another terminal in order for it to deploy.
+---
 
-```
-make deploy
-```
+## 🔗 Finding → Fix Traceability
 
-## Testing
+Each fix directly corresponds to a reported audit finding.
 
-```
+Detailed mapping is available in:
+
+fixes/mapping.md
+
+
+---
+
+## 📂 Modified Files
+
+- `src/PasswordStore.sol` — Remediated contract implementation
+- `fixes/changelog.md` — Summary of applied fixes
+- `fixes/mapping.md` — Audit finding to fix mapping
+
+---
+
+## 🧪 Testing
+
+All fixes were tested using **Foundry**.
+
+```bash
 forge test
-```
-
-### Test Coverage
-
-```
 forge coverage
 ```
+## ⚠️ Disclaimer
 
-and for coverage based testing: 
+This remediated version is provided without warranty and does not guarantee complete security.
+Independent review and testing are recommended before production deployment.
 
-```
-forge coverage --report debug
-```
+## 👤 Author
 
-# Audit Scope Details
+Belal Zedan
+Smart Contract Auditor
+Specialized in Solidity & Smart Contract Security
 
-- In Scope:
-```
-./src/
-└── PasswordStore.sol
-```
-- Solc Version: 0.8.18
-- Chain(s) to deploy contract to: Ethereum
 
-# Roles
-- Owner: The user who can set the password and read the password.
-- Outsides: No one else should be able to set or read the password.
+---
+
